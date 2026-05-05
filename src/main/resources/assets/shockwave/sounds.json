@@ -1,0 +1,8 @@
+{
+  "explosion_large": {
+    "subtitle": "shockwave.subtitle.explosion_large",
+    "sounds": [
+      { "name": "shockwave:explosion_large", "volume": 1.0, "pitch": 1.0 }
+    ]
+  }
+}
