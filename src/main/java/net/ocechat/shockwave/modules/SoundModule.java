@@ -1,5 +1,6 @@
 package net.ocechat.shockwave.modules;
 
+import net.minecraft.sounds.SoundEvents;
 import net.ocechat.shockwave.ShockwaveSounds;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
@@ -23,7 +24,7 @@ public class SoundModule {
         level.playSound(
                 null,                           // null = diffusé à tous
                 pos.x, pos.y, pos.z,
-                ShockwaveSounds.EXPLOSION_LARGE.get(),
+                SoundEvents.GENERIC_EXPLODE.value(),
                 SoundSource.BLOCKS,
                 volume,
                 0.8f + level.random.nextFloat() * 0.4f // pitch aléatoire

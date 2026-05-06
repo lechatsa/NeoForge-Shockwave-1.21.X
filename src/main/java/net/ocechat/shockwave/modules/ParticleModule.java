@@ -4,6 +4,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.ocechat.shockwave.ShockwaveMod;
 
 public class ParticleModule {
 
@@ -15,6 +16,8 @@ public class ParticleModule {
             return;
 
         int count = (int) (radius * 12);
+
+        if (ShockwaveMod.DEBUG) ShockwaveMod.LOGGER.info( "[Shockwave] (ParticleModule) Spawning particles at pos : {} ", pos);
 
         // Colonne de fumée centrale
         serverLevel.sendParticles(
@@ -38,7 +41,7 @@ public class ParticleModule {
         serverLevel.sendParticles(
                 ParticleTypes.FLASH,
                 pos.x, pos.y, pos.z,
-                1, 0, 0, 0, 0
+                20, 0, 0, 0, 0
         );
     }
 }

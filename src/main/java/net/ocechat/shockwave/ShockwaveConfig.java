@@ -9,8 +9,8 @@ public class ShockwaveConfig {
 
     public static final ModConfigSpec SPEC;
 
-    // Beta
-    public static final ModConfigSpec.BooleanValue LOG;
+    // DEBUG
+    //public static final ModConfigSpec.BooleanValue DEBUG;
 
     // Onde de choc
     public static final ModConfigSpec.DoubleValue
@@ -47,9 +47,7 @@ public class ShockwaveConfig {
                 .comment("Active la formation de cratère")
                 .define("enableCrater", true);
 
-        LOG = BUILDER
-                .comment("LOG On Mode")
-                .define("enableLOG", true);
+        //DEBUG = BUILDER.comment("DEBUG Mode On").define("enableDebug", true);
 
 
         BUILDER.pop();

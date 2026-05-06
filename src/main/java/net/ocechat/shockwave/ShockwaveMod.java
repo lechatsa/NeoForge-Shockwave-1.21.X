@@ -5,12 +5,13 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 import net.ocechat.shockwave.events.ExplosionEventHandler;
-import net.ocechat.shockwave.modules.ShockwaveParticles;
 import org.slf4j.Logger;
+
 
 @Mod(ShockwaveMod.MOD_ID)
 public class ShockwaveMod {
 
+    public static final Boolean DEBUG = Boolean.TRUE;
     public static final String MOD_ID = "shockwave";
     public static final Logger LOGGER = LogUtils.getLogger();
 
@@ -24,6 +25,10 @@ public class ShockwaveMod {
         // Enregistrement du handler d'événements sur le bus FORGE
         NeoForge.EVENT_BUS.register(ExplosionEventHandler.class);
 
-        LOGGER.info( "Shockwave mod chargé !" );
+
+
+        if (DEBUG) {
+            LOGGER.info( "Shockwave mod chargé !" );
+        }
     }
 }

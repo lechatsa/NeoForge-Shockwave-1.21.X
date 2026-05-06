@@ -5,6 +5,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.ocechat.shockwave.ShockwaveMod;
+
 import java.util.List;
 
 public class TerrainModule {
@@ -13,11 +15,15 @@ public class TerrainModule {
 
         if (level.isClientSide()) return;
 
+        if (ShockwaveMod.DEBUG) ShockwaveMod.LOGGER.info( "[Shockwave] (TerrainModule) Reshaping the area at pos : {} ", center);
+
         for (BlockPos pos : affectedBlocks) {
             BlockState state = level.getBlockState(pos);
 
             // Ne pas toucher l'air ou les blocs déjà détruits
             if (state.isAir()) continue;
+
+            if (ShockwaveMod.DEBUG) ShockwaveMod.LOGGER.info( "[Shockwave] (TerrainModule) Continuing because !isAir" );
 
             double dist = Math.sqrt(
                     center.distanceToSqr(
@@ -26,12 +32,16 @@ public class TerrainModule {
                             pos.getZ() + 0.5));
 
             // Dépôt de feu sur les bords du cratère
-            if (dist > 1.5 && level.random.nextFloat() < 0.15f) {
+            if (dist > 1.5) {
+
                 BlockPos above = pos.above();
+
+                if (ShockwaveMod.DEBUG) ShockwaveMod.LOGGER.info( "[Shockwave] (TerrainModule) Spreading fire at pos : {}", above );
+
                 if (level.getBlockState(above).isAir()) {
-                    level.setBlock(above,
-                            Blocks.FIRE.defaultBlockState(),
-                            3);
+
+                    level.setBlock(above, Blocks.FIRE.defaultBlockState(), 3);
+
                 }
             }
         }

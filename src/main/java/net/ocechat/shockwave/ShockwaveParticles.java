@@ -1,9 +1,8 @@
-package net.ocechat.shockwave.modules;
+package net.ocechat.shockwave;
 
 import net.minecraft.core.particles.ParticleType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.ocechat.shockwave.ShockwaveMod;
 
 public class ShockwaveParticles {
 
