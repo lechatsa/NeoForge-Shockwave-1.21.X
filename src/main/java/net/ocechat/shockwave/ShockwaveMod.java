@@ -5,6 +5,8 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 import net.ocechat.shockwave.events.ExplosionEventHandler;
+import net.ocechat.shockwave.utils.ShockwaveParticles;
+import net.ocechat.shockwave.utils.ShockwaveSounds;
 import org.slf4j.Logger;
 
 

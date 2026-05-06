@@ -5,33 +5,29 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.ExplosionEvent;
 
-// Pas de bus= ici : le bus par défaut est FORGE, celui des événements monde
 @EventBusSubscriber(modid = "shockwave")
 public class ExplosionEventHandler {
 
     @SubscribeEvent
-    public static void onExplosionStart( ExplosionEvent.Start event ) {
+    public static void onExplosionStart(ExplosionEvent.Start event) {
 
-        var explosion = event.getExplosion();
-        var level     = event.getLevel();
-        var pos       = explosion.center();
-        float radius  = explosion.radius();
+        // Cancel the vanilla explosion entirely —
+        // blocks, entity damage, and portal side-effects included
+        event.setCanceled(true);
 
+        var level  = event.getLevel();
+        var pos    = event.getExplosion().center();
+        float radius = event.getExplosion().radius();
+
+
+
+        // Our replacement pipeline
         ShockwaveModule.apply(level, pos, radius);
         SoundModule.play(level, pos, radius);
-
-    }
-
-    @SubscribeEvent
-    public static void onExplosionDetonate( ExplosionEvent.Detonate event ) {
-
-        var explosion = event.getExplosion();
-        var level     = event.getLevel();
-        var pos       = explosion.center();
-        float radius  = explosion.radius();
-
-        TerrainModule.reshape(level, pos, event.getAffectedBlocks());
+        TerrainModule.reshape(level, pos, radius);
         ParticleModule.spawn(level, pos, radius);
-
     }
+
+    // onExplosionDetonate is no longer needed:
+    // canceling Start prevents Detonate from firing at all
 }

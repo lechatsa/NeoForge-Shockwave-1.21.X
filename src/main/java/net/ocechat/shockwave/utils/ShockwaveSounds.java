@@ -1,4 +1,4 @@
-package net.ocechat.shockwave;
+package net.ocechat.shockwave.utils;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
