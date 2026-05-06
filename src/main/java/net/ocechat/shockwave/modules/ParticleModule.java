@@ -4,6 +4,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.ocechat.shockwave.ShockwaveMod;
+import net.ocechat.shockwave.client.particle.DebrisParticleData;
 import net.ocechat.shockwave.utils.ShockwaveParticles;
 
 public class ParticleModule {
@@ -46,21 +47,24 @@ public class ParticleModule {
                 0.01
         );
 
-        // Debris — radial burst in all directions
-        int debrisCount = (int) (radius * 5);
-        for (int i = 0; i < debrisCount; i++) {
-            double angle  = serverLevel.random.nextDouble() * Math.PI * 2;
-            double elevation = (serverLevel.random.nextDouble() - 0.2) * Math.PI;
-            float speed   = 0.3f + serverLevel.random.nextFloat() * 0.4f;
+        // Debris — speed and count scale with explosion radius
+        int debrisCount = (int) (radius * 6);
+        float speedBase = 0.3f + radius * 0.08f;   // small explosion: ~0.5  |  large: ~1.1+
+        float speedVar  = radius * 0.05f;
 
-            double vx = Math.cos(angle) * Math.cos(elevation) * speed;
-            double vy = Math.sin(elevation) * speed + 0.2;
-            double vz = Math.sin(angle) * Math.cos(elevation) * speed;
+        for (int i = 0; i < debrisCount; i++) {
+            double angle     = serverLevel.random.nextDouble() * Math.PI * 2;
+            double elevation = (serverLevel.random.nextDouble() - 0.2) * Math.PI;
+            float speed      = speedBase + serverLevel.random.nextFloat() * speedVar;
+
+            float vx = (float) (Math.cos(angle) * Math.cos(elevation) * speed);
+            float vy = (float) (Math.sin(elevation) * speed + 0.3f);
+            float vz = (float) (Math.sin(angle) * Math.cos(elevation) * speed);
 
             serverLevel.sendParticles(
-                    ShockwaveParticles.DEBRIS.get(),
+                    new DebrisParticleData(vx, vy, vz),
                     pos.x, pos.y, pos.z,
-                    1, vx, vy, vz, 0
+                    1, 0, 0, 0, 0
             );
         }
     }
