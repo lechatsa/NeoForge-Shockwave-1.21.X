@@ -9,46 +9,67 @@ public class ShockwaveConfig {
 
     public static final ModConfigSpec SPEC;
 
-    // DEBUG
-    //public static final ModConfigSpec.BooleanValue DEBUG;
+    /// --- Shockwave
+    public static final ModConfigSpec.DoubleValue SHOCKWAVE_MULTIPLIER;
+    public static final ModConfigSpec.IntValue ENERGIE_TNT;
+    public static final ModConfigSpec.DoubleValue SOUND_SPEED;
+    public static final ModConfigSpec.DoubleValue GAMMA;
+    public static final ModConfigSpec.DoubleValue PHI;
+    public static final ModConfigSpec.IntValue PRESSURE;
 
-    // Onde de choc
-    public static final ModConfigSpec.DoubleValue
-            SHOCKWAVE_MULTIPLIER;
+    /// --- Sound
+    public static final ModConfigSpec.DoubleValue SOUND_RANGE_MULTIPLIER;
 
-    // Son
-    public static final ModConfigSpec.DoubleValue
-            SOUND_RANGE_MULTIPLIER;
+    /// --- Terrain
+    public static final ModConfigSpec.BooleanValue ENABLE_FIRE_SPREAD;
+    public static final ModConfigSpec.BooleanValue ENABLE_CRATER;
 
-    // Terrain
-    public static final ModConfigSpec.BooleanValue
-            ENABLE_FIRE_SPREAD;
-    public static final ModConfigSpec.BooleanValue
-            ENABLE_CRATER;
 
     static {
         BUILDER.push("shockwave");
 
         SHOCKWAVE_MULTIPLIER = BUILDER
-                .comment("Multiplicateur rayon onde de choc")
-                .defineInRange("shockwaveMultiplier",
-                        1.8, 0.5, 5.0);
+                .comment("Shockwave radius multiplier")
+                .defineInRange("shockwaveMultiplier", 1.8, 0.5, 5.0);
 
         SOUND_RANGE_MULTIPLIER = BUILDER
-                .comment("Multiplicateur portée son")
-                .defineInRange("soundRangeMultiplier",
-                        2.0, 1.0, 8.0);
+                .comment("Sound distance multiplier")
+                .defineInRange("soundRangeMultiplier", 2.0, 1.0, 8.0);
 
         ENABLE_FIRE_SPREAD = BUILDER
-                .comment("Active les brûlures au sol")
+                .comment("Enable fire spreading around an explosion")
                 .define("enableFireSpread", true);
 
         ENABLE_CRATER = BUILDER
-                .comment("Active la formation de cratère")
+                .comment("Enable the crater formation")
                 .define("enableCrater", true);
 
-        //DEBUG = BUILDER.comment("DEBUG Mode On").define("enableDebug", true);
+        // Energy per TNT (J) — real TNT is ~4 184 000 J per kg
+        ENERGIE_TNT = BUILDER
+                .comment("Energy released by one TNT in Joules")
+                .defineInRange("energyTNT", 4_184_000, 1_000, 100_000_000);
 
+        // PHI — scaled distance threshold for lethal zone
+        // Calibrated so that 1 TNT kills at d=0 and deals 2HP at d=5m
+        PHI = BUILDER
+                .comment("Scaled distance lethality threshold (Hopkinson-Cranz). "
+                        + "Lower = larger lethal zone. Default calibrated for 5m kill radius per TNT.")
+                .defineInRange("phi", 0.071, 0.001, 1.0);
+
+        // Atmospheric pressure (Pa)
+        PRESSURE = BUILDER
+                .comment("Ambient atmospheric pressure in Pa")
+                .defineInRange("ambientPressure", 101_325, 50_000, 200_000);
+
+        // Speed of sound (m/s)
+        SOUND_SPEED = BUILDER
+                .comment("Speed of sound in m/s")
+                .defineInRange("soundSpeed", 343.0, 100.0, 2000.0);
+
+        // Gamma — heat capacity ratio of air
+        GAMMA = BUILDER
+                .comment("Heat capacity ratio of air (gamma)")
+                .defineInRange("gamma", 1.4, 1.0, 2.0);
 
         BUILDER.pop();
         SPEC = BUILDER.build();

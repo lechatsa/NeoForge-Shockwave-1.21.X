@@ -22,7 +22,7 @@ public class ExplosionEventHandler {
 
 
         // Our replacement pipeline
-        ShockwaveModule.apply(level, pos, radius);
+        ShockwaveModule.apply(level, pos, radius, 1);
         SoundModule.play(level, pos, radius);
         TerrainModule.reshape(level, pos, radius);
         ParticleModule.spawn(level, pos, radius);

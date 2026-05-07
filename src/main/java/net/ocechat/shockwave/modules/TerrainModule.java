@@ -84,28 +84,28 @@ public class TerrainModule {
         }
 
         // Entity damage proportional to distance
-        List<Entity> entities = level.getEntitiesOfClass(
-                Entity.class,
-                AABB.ofSize(center, radius * 2, radius * 2, radius * 2)
-        );
-
-        for (Entity entity : entities) {
-            double dist = entity.position().distanceTo(center);
-            if (dist > radius) continue;
-
-            float damageFactor = (float) (1.0 - dist / radius);
-            float damage = damageFactor * radius * 2.0f;
-
-            if (entity instanceof LivingEntity living) {
-                living.hurt(
-                        serverLevel.damageSources().explosion(null, null),
-                        damage
-                );
-
-                if (ShockwaveMod.DEBUG)
-                    ShockwaveMod.LOGGER.info("[Shockwave] (TerrainModule) Dealt {} dmg to {} (dist = {})",
-                            damage, entity.getName().getString(), dist);
-            }
-        }
+//        List<Entity> entities = level.getEntitiesOfClass(
+//                Entity.class,
+//                AABB.ofSize(center, radius * 2, radius * 2, radius * 2)
+//        );
+//
+//        for (Entity entity : entities) {
+//            double dist = entity.position().distanceTo(center);
+//            if (dist > radius) continue;
+//
+//            float damageFactor = (float) (1.0 - dist / radius);
+//            float damage = damageFactor * radius * 2.0f;
+//
+//            if (entity instanceof LivingEntity living) {
+//                living.hurt(
+//                        serverLevel.damageSources().explosion(null, null),
+//                        damage
+//                );
+//
+//                if (ShockwaveMod.DEBUG)
+//                    ShockwaveMod.LOGGER.info("[Shockwave] (TerrainModule) Dealt {} dmg to {} (dist = {})",
+//                            damage, entity.getName().getString(), dist);
+//            }
+//        }
     }
 }

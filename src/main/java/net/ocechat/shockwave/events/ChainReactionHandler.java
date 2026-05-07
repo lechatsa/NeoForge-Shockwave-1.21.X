@@ -97,7 +97,7 @@ public class ChainReactionHandler {
                     center, consolidatedRadius, 1.0f + (float) Math.log(total));
 
         // --- Trigger the full explosion pipeline ---
-        ShockwaveModule.apply(level, center, consolidatedRadius);
+        ShockwaveModule.apply(level, center, consolidatedRadius, total);
         SoundModule.play(level, center, consolidatedRadius);
         TerrainModule.reshape(level, center, consolidatedRadius);
         ParticleModule.spawn(level, center, consolidatedRadius);

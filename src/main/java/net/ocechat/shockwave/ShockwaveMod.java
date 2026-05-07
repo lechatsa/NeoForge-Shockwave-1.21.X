@@ -3,10 +3,12 @@ package net.ocechat.shockwave;
 import com.mojang.logging.LogUtils;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.common.NeoForgeConfig;
 import net.ocechat.shockwave.events.ExplosionEventHandler;
 import net.ocechat.shockwave.events.ChainReactionHandler;
 import net.ocechat.shockwave.utils.ShockwaveParticleRegistry;
@@ -22,6 +24,9 @@ public class ShockwaveMod {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public ShockwaveMod(IEventBus modEventBus) {
+
+        net.neoforged.fml.ModLoadingContext.get().getActiveContainer()
+                .registerConfig(net.neoforged.fml.config.ModConfig.Type.COMMON, ShockwaveConfig.SPEC);
 
         ShockwaveSounds.SOUNDS.register(modEventBus);
         ShockwaveParticles.PARTICLES.register(modEventBus);
