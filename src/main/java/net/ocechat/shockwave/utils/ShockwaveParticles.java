@@ -25,6 +25,9 @@ public class ShockwaveParticles {
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> EXPLOSION_SMOKE =
             PARTICLES.register("explosion_smoke", () -> new SimpleParticleType(false));
 
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> CONDENSATION_SPHERE =
+            PARTICLES.register("condensation_sphere", () -> new SimpleParticleType(false));
+
     public static final DeferredHolder<ParticleType<?>, ParticleType<DebrisParticleData>> DEBRIS =
             PARTICLES.register("debris", () -> new ParticleType<>(false) {
                 @Override

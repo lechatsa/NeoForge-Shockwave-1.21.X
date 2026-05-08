@@ -52,9 +52,12 @@ public class TerrainModule {
                         }
                     }
 
-                    // Destroy block — no drops
+                    // Destroy block — no drops, respects blast resistance
                     if (!state.isAir()) {
-                        level.removeBlock(pos, false);
+                        float blastResistance = state.getBlock().getExplosionResistance();
+                        if (blastResistance < 1200f) {
+                            level.removeBlock(pos, false);
+                        }
                     }
                 }
             }

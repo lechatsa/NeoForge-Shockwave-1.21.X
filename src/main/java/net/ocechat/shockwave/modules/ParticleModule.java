@@ -5,6 +5,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.ocechat.shockwave.ShockwaveMod;
 import net.ocechat.shockwave.client.particle.DebrisParticleData;
+import net.ocechat.shockwave.events.CondensationSphereHandler;
 import net.ocechat.shockwave.utils.ShockwaveParticles;
 
 public class ParticleModule {
@@ -16,12 +17,6 @@ public class ParticleModule {
         if (ShockwaveMod.DEBUG)
             ShockwaveMod.LOGGER.info("[Shockwave] (ParticleModule) Spawning particles at {}", pos);
 
-        // Flash — single centered, visible at range
-        serverLevel.sendParticles(
-                ShockwaveParticles.FLASH.get(),
-                pos.x, pos.y, pos.z,
-                1, 0, 0, 0, 0
-        );
 
         // Fireball — single centered, expands via quadSize in tick()
         serverLevel.sendParticles(
@@ -67,5 +62,7 @@ public class ParticleModule {
                     1, 0, 0, 0, 0
             );
         }
+
+
     }
 }

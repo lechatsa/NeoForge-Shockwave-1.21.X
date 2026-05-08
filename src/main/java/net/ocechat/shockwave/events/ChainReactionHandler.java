@@ -1,6 +1,7 @@
 package net.ocechat.shockwave.events;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -101,5 +102,9 @@ public class ChainReactionHandler {
         SoundModule.play(level, center, consolidatedRadius);
         TerrainModule.reshape(level, center, consolidatedRadius);
         ParticleModule.spawn(level, center, consolidatedRadius);
+
+        if (level instanceof ServerLevel serverLevel) {
+            CondensationSphereHandler.spawn(serverLevel, center, tntFound.size());
+        }
     }
 }

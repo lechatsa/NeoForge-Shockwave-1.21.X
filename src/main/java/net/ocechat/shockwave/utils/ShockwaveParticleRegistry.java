@@ -12,5 +12,6 @@ public class ShockwaveParticleRegistry {
         event.registerSpriteSet(ShockwaveParticles.EXPLOSION_SMOKE.get(), ExplosionSmokeParticle.Provider::new);
         event.registerSpriteSet(ShockwaveParticles.DEBRIS.get(),          DebrisParticle.Provider::new);
         event.registerSpriteSet(ShockwaveParticles.FLASH.get(),           FlashParticle.Provider::new);
+        event.registerSpriteSet(ShockwaveParticles.CONDENSATION_SPHERE.get(), CondensationSphereParticle.Provider::new);
     }
 }
