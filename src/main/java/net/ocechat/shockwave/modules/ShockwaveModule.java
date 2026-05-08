@@ -12,7 +12,6 @@ import static net.ocechat.shockwave.ShockwaveConfig.*;
 public class ShockwaveModule {
 
     // Base lethal radius for 1 TNT in Minecraft blocks
-    private static final double BASE_LETHAL_RADIUS = 5.0;
 
     public static void apply(Level level, Vec3 center, float radius, int numberOfTNT) {
 
@@ -30,15 +29,11 @@ public class ShockwaveModule {
             double v = calculateVelocity(P);
 
             // Damage and impulse — calibrated in Minecraft units
-            double lethalRadius = BASE_LETHAL_RADIUS * (1.0 + Math.log(Math.max(1, numberOfTNT)));
             Float damage = calculateDamage(d, numberOfTNT);
 
             if (ShockwaveMod.DEBUG)
                 ShockwaveMod.LOGGER.info(
-                        "[Shockwave] (ShockwaveModule) {} | damage={} lethalR={} " +
-                                "Z={} P={}Pa v={}m/s d={}m E={}J",
-                        entity.getName().getString(), damage, lethalRadius,
-                        Z, P, v, d, E);
+                        "[Shockwave] (ShockwaveModule) {} | damage={} Z={} P={}Pa v={}m/s d={}m E={}J", entity.getName().getString(), damage, Z, P, v, d, E);
 
             applyImpulse(entity, center, d, r, v);
 
@@ -49,7 +44,7 @@ public class ShockwaveModule {
                 );
             } else if (ShockwaveMod.DEBUG) {
                 ShockwaveMod.LOGGER.info(
-                        "[Shockwave] (ShockwaveModule) Skipped {} (damage={} < 1 or not living)",
+                        "[Shockwave] (ShockwaveModule) Skipped {} (damage = {} < 1 or not living)",
                         entity.getName().getString(), damage);
             }
         });
@@ -84,9 +79,18 @@ public class ShockwaveModule {
     }
 
     // -- damage (HP) :
-    public static float calculateDamage(double d,int numberOfTNT) {
+    public static float calculateDamage(double x,int numberOfTNT) {
 
-        return (float) (-12.2180765 * Math.sqrt(d) + 47.32050828) * numberOfTNT;
+        double squareTNT = Math.pow(numberOfTNT, 1.0/3.0);
+        double a = squareTNT; // a is the multiplier of the MAX damage dealt at 0m
+        double b = squareTNT; // b is the multiplier of the distance at which the damage is null
+
+        double p = BASE_VALUE_MAX.get();
+        double m = -p / Math.sqrt(BASE_VALUE_ZERO.get());
+
+        double damage = Math.max(m * (a)/(Math.sqrt(b)) * Math.sqrt(x) + p * a, 0.0); // dmg(x) = m * (a)/(sqrt(b)) sqrt(x) + p * a
+        if (ShockwaveMod.DEBUG) ShockwaveMod.LOGGER.info("[Shockwave] (ShockwaveModule) f({}) = {} x {}/ √{} x √{} + {} x {} = {}dmg", x, m, a, b, x, p, a, Math.round(damage));
+        return (float) damage;
     }
 
     // -- Impulse : radial push, v used as a relative strength indicator
@@ -100,10 +104,8 @@ public class ShockwaveModule {
         double forceFactor = (1.0 - d / r) * (v / 400.0);
         forceFactor = Math.min(forceFactor, 3.0);
 
-        Vec3 impulse = delta.normalize()
-                .scale(forceFactor)
+        Vec3 impulse = delta.normalize().scale(forceFactor)
                 .add(0, forceFactor * 0.35, 0);
-
         entity.setDeltaMovement(entity.getDeltaMovement().add(impulse));
         entity.hurtMarked = true;
     }

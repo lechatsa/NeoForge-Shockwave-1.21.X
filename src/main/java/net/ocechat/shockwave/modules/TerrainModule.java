@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -46,9 +47,7 @@ public class TerrainModule {
                     // Collect fire candidates on the outer shell before destruction
                     if (distSq >= innerRadiusSq) {
                         BlockPos above = pos.above();
-                        if (!state.isAir()
-                                && level.getBlockState(above).isAir()
-                                && level.random.nextFloat() < 0.25f) {
+                        if (!state.isAir() && level.getBlockState(above).isAir() && level.random.nextFloat() < 0.25f) {
                             firePositions.add(above);
                         }
                     }
@@ -83,29 +82,6 @@ public class TerrainModule {
             }
         }
 
-        // Entity damage proportional to distance
-//        List<Entity> entities = level.getEntitiesOfClass(
-//                Entity.class,
-//                AABB.ofSize(center, radius * 2, radius * 2, radius * 2)
-//        );
-//
-//        for (Entity entity : entities) {
-//            double dist = entity.position().distanceTo(center);
-//            if (dist > radius) continue;
-//
-//            float damageFactor = (float) (1.0 - dist / radius);
-//            float damage = damageFactor * radius * 2.0f;
-//
-//            if (entity instanceof LivingEntity living) {
-//                living.hurt(
-//                        serverLevel.damageSources().explosion(null, null),
-//                        damage
-//                );
-//
-//                if (ShockwaveMod.DEBUG)
-//                    ShockwaveMod.LOGGER.info("[Shockwave] (TerrainModule) Dealt {} dmg to {} (dist = {})",
-//                            damage, entity.getName().getString(), dist);
-//            }
-//        }
+
     }
 }

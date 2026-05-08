@@ -23,8 +23,8 @@ public class ShockwaveConfig {
     /// --- Terrain
     public static final ModConfigSpec.BooleanValue ENABLE_FIRE_SPREAD;
     public static final ModConfigSpec.BooleanValue ENABLE_CRATER;
-
-
+    public static final ModConfigSpec.DoubleValue BASE_VALUE_ZERO;
+    public static final ModConfigSpec.DoubleValue BASE_VALUE_MAX;
     static {
         BUILDER.push("shockwave");
 
@@ -70,6 +70,14 @@ public class ShockwaveConfig {
         GAMMA = BUILDER
                 .comment("Heat capacity ratio of air (gamma)")
                 .defineInRange("gamma", 1.4, 1.0, 2.0);
+
+        BASE_VALUE_ZERO = BUILDER
+                .comment("The distance at which one kilogram of TNT will no longer cause any damage")
+                .defineInRange("baseValueZero", 50.0, 1.0, 200.0);
+
+        BASE_VALUE_MAX  = BUILDER
+                .comment("The maximum damage inflicted by one kilogram of TNT at a theoretical distance of 0")
+                .defineInRange("baseValueMax", 50.0, 1.0, 200.0);
 
         BUILDER.pop();
         SPEC = BUILDER.build();
