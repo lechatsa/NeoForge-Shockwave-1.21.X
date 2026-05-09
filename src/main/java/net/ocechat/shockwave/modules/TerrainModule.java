@@ -1,16 +1,14 @@
 package net.ocechat.shockwave.modules;
 
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.ocechat.shockwave.ShockwaveMod;
+import net.ocechat.shockwave.utils.BlockCluster;
+import net.ocechat.shockwave.utils.PhysicalBehavior;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +18,7 @@ public class TerrainModule {
     public static void reshape(Level level, Vec3 center, float radius) {
 
         if (level.isClientSide()) return;
-        if (!(level instanceof ServerLevel serverLevel)) return;
+        if (!(level instanceof ServerLevel)) return;
 
         if (ShockwaveMod.DEBUG)
             ShockwaveMod.LOGGER.info("[Shockwave] (TerrainModule) Reshaping sphere at {} r = {} ", center, radius);
@@ -29,10 +27,6 @@ public class TerrainModule {
         BlockPos origin = BlockPos.containing(center);
 
         float radiusSq      = radius * radius;
-        float innerRadiusSq = (radius - 1) * (radius - 1);
-
-        // Collect fire positions BEFORE destroying anything
-        List<BlockPos> firePositions = new ArrayList<>();
 
         for (int dx = -r; dx <= r; dx++) {
             for (int dy = -r; dy <= r; dy++) {
@@ -44,13 +38,6 @@ public class TerrainModule {
                     BlockPos pos = origin.offset(dx, dy, dz);
                     BlockState state = level.getBlockState(pos);
 
-                    // Collect fire candidates on the outer shell before destruction
-                    if (distSq >= innerRadiusSq) {
-                        BlockPos above = pos.above();
-                        if (!state.isAir() && level.getBlockState(above).isAir() && level.random.nextFloat() < 0.25f) {
-                            firePositions.add(above);
-                        }
-                    }
 
                     // Destroy block — no drops, respects blast resistance
                     if (!state.isAir()) {
@@ -79,7 +66,7 @@ public class TerrainModule {
                         level.setBlockAndUpdate(pos,
                                 net.minecraft.world.level.block.BaseFireBlock.getState(level, pos));
 
-                        // if (ShockwaveMod.DEBUG) ShockwaveMod.LOGGER.info("[Shockwave] (TerrainModule) Fire placed at {}", pos);
+
                     }
                 }
             }
@@ -87,4 +74,53 @@ public class TerrainModule {
 
 
     }
+
+    public static List<BlockCluster> defineCluster(Level level, Vec3 center, float radius) {
+
+        List<BlockCluster> blockClusterList = new ArrayList<>();
+        int r = (int) Math.ceil(radius);
+        BlockPos origin = BlockPos.containing(center);
+        Float radiusSq = radius*radius;
+
+
+        for (int dx = -r; dx <= r; dx++) {
+            for (int dy = -r; dy <= r; dy++) {
+                for (int dz = -r; dz <= r; dz++) {
+
+                    float distSq = dx * dx + dy * dy + dz * dz;
+                    if (distSq > radiusSq) continue;
+
+                    BlockPos pos = origin.offset(dx, dy, dz);
+                    BlockState state = level.getBlockState(pos);
+                    Float blastResistance = state.getBlock().getExplosionResistance();
+
+                    if (dx == 0 && dy == 0 && dz == 0) continue;
+
+                    Float multiplierFragility = 1/blastResistance;
+                    Float multiplierDistance = 1/(float) Math.sqrt(distSq);
+                    Double multiplierTotal = (double) (multiplierFragility + multiplierDistance);
+
+                    blockClusterList.add(
+                            new BlockCluster(
+                                    pos,
+                                    origin,
+                                    state,
+                                    PhysicalBehavior.NULL,
+                                    new Vec3(
+                                            multiplierTotal*dx,
+                                            multiplierTotal*dy,
+                                            multiplierTotal*dz
+                                    )
+                            )
+                    );
+
+                }
+            }
+        }
+        return blockClusterList;
+    }
+
+
+
+
 }

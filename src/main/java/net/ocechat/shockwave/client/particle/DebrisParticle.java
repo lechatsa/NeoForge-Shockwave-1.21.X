@@ -17,7 +17,7 @@ public class DebrisParticle extends TextureSheetParticle {
         super(level, x, y, z, 0, 0, 0);
         this.sprites = sprites;
 
-        this.lifetime   = 25 + level.random.nextInt(20);
+        this.lifetime   = 50 + level.random.nextInt(20);
         this.quadSize   = 0.12f + level.random.nextFloat() * 0.1f;
         this.alpha      = 1.0f;
         this.hasPhysics = true;

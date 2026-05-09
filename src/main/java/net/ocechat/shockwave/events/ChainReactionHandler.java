@@ -100,8 +100,9 @@ public class ChainReactionHandler {
         // --- Trigger the full explosion pipeline ---
         ShockwaveModule.apply(level, center, consolidatedRadius, total);
         SoundModule.play(level, center, consolidatedRadius);
-        TerrainModule.reshape(level, center, consolidatedRadius);
         ParticleModule.spawn(level, center, consolidatedRadius);
+        TerrainModule.reshape(level, center, consolidatedRadius);
+
 
         if (level instanceof ServerLevel serverLevel) {
             CondensationSphereHandler.spawn(serverLevel, center, tntFound.size());

@@ -20,7 +20,7 @@ import static net.ocechat.shockwave.ShockwaveConfig.*;
 public class CondensationSphereHandler {
 
     // Number of Fibonacci points per tick — exposed to config later
-    private static final int POINTS_PER_TICK = 2560;
+    private static final int POINTS_PER_TICK = 2000;
 
     // Active spheres being simulated
     private static final List<CondensationSphere> activeSpheres = new ArrayList<>();
@@ -105,7 +105,7 @@ public class CondensationSphereHandler {
                 double z = center.z + r * Math.sin(phi) * Math.sin(theta);
 
                 level.sendParticles(
-                        ParticleTypes.LARGE_SMOKE,
+                        ParticleTypes.WHITE_SMOKE,
                         x, y, z,
                         1, 0, 0, 0, 0
                 );

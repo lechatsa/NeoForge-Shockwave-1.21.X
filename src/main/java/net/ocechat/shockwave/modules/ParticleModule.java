@@ -6,7 +6,10 @@ import net.minecraft.world.phys.Vec3;
 import net.ocechat.shockwave.ShockwaveMod;
 import net.ocechat.shockwave.client.particle.DebrisParticleData;
 import net.ocechat.shockwave.events.CondensationSphereHandler;
+import net.ocechat.shockwave.utils.BlockCluster;
 import net.ocechat.shockwave.utils.ShockwaveParticles;
+
+import java.util.List;
 
 public class ParticleModule {
 
@@ -42,19 +45,32 @@ public class ParticleModule {
                 0.01
         );
 
+        Vec3 resulting = BlockCluster.sum(TerrainModule.defineCluster(level, pos, radius));
+
         // Debris — speed and count scale with explosion radius
         int debrisCount = (int) (radius * 6);
         float speedBase = 0.3f + radius * 0.08f;   // small explosion: ~0.5  |  large: ~1.1+
         float speedVar  = radius * 0.05f;
 
+        double dx = resulting.x;
+        double dz = resulting.z;
+        double dy = resulting.y;
+
+        double horizontalDistance = Math.sqrt(dx * dx + dz * dz);
+
+        double yaw     = Math.atan2(dz, dx);
+        double pitch = Math.atan2(dy, horizontalDistance);
+
         for (int i = 0; i < debrisCount; i++) {
-            double angle     = serverLevel.random.nextDouble() * Math.PI * 2;
-            double elevation = (serverLevel.random.nextDouble() - 0.2) * Math.PI;
+
+            double yawRandomised = yaw + (serverLevel.random.nextDouble() - 0.5) * (Math.PI / 2);
+            double pitchRandomised = pitch + (serverLevel.random.nextDouble() - 0.5) * (Math.PI / 2);
+
             float speed      = speedBase + serverLevel.random.nextFloat() * speedVar;
 
-            float vx = (float) (Math.cos(angle) * Math.cos(elevation) * speed);
-            float vy = (float) (Math.sin(elevation) * speed + 0.3f);
-            float vz = (float) (Math.sin(angle) * Math.cos(elevation) * speed);
+            float vx = (float) (Math.cos(yawRandomised) * Math.cos(pitchRandomised) * speed);
+            float vy = (float) (Math.sin(pitchRandomised) * speed);
+            float vz = (float) (Math.sin(yawRandomised) * Math.cos(pitchRandomised) * speed);
 
             serverLevel.sendParticles(
                     new DebrisParticleData(vx, vy, vz),
