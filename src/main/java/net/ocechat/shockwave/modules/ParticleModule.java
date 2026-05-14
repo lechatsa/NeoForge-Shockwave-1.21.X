@@ -8,6 +8,7 @@ import net.ocechat.shockwave.client.particle.DebrisParticleData;
 import net.ocechat.shockwave.events.CondensationSphereHandler;
 import net.ocechat.shockwave.utils.BlockCluster;
 import net.ocechat.shockwave.utils.ShockwaveParticles;
+import oshi.util.tuples.Pair;
 
 import java.util.List;
 
@@ -42,24 +43,24 @@ public class ParticleModule {
                 pos.x, pos.y, pos.z,
                 smokeCount,
                 radius * 0.4, 0.2, radius * 0.4,
-                0.01
+                1.0
         );
 
-        Vec3 resulting = BlockCluster.sum(TerrainModule.defineCluster(level, pos, radius));
+        List<BlockCluster> clusterList = TerrainModule.defineCluster(level, pos, radius);
+
 
         // Debris — speed and count scale with explosion radius
         int debrisCount = (int) (radius * 6);
         float speedBase = 0.3f + radius * 0.08f;   // small explosion: ~0.5  |  large: ~1.1+
         float speedVar  = radius * 0.05f;
 
-        double dx = resulting.x;
-        double dz = resulting.z;
-        double dy = resulting.y;
+        Pair<Double, Double> pair = BlockCluster.getAngles(clusterList);
 
-        double horizontalDistance = Math.sqrt(dx * dx + dz * dz);
+        if (ShockwaveMod.DEBUG)
+            ShockwaveMod.LOGGER.info("[Shockwave] (ParticleModule) Spawning debris particles with pitch :  {}, yaw : {}", pair.getB(), pair.getA());
 
-        double yaw     = Math.atan2(dz, dx);
-        double pitch = Math.atan2(dy, horizontalDistance);
+        double yaw = pair.getA();
+        double pitch = pair.getB();
 
         for (int i = 0; i < debrisCount; i++) {
 

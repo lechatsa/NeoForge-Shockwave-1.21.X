@@ -4,6 +4,7 @@ package net.ocechat.shockwave.modules;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.ocechat.shockwave.ShockwaveMod;
@@ -41,7 +42,7 @@ public class TerrainModule {
 
                     // Destroy block — no drops, respects blast resistance
                     if (!state.isAir()) {
-                        float blastResistance = state.getBlock().getExplosionResistance();
+                        float blastResistance = state.getBlock().getExplosionResistance(state, level, pos, null);
                         if (blastResistance < 1200f) {
                             level.removeBlock(pos, false);
                         }
@@ -64,13 +65,22 @@ public class TerrainModule {
                             && level.getBlockState(pos.below()).isSolidRender(level, pos.below())) {
 
                         level.setBlockAndUpdate(pos,
-                                net.minecraft.world.level.block.BaseFireBlock.getState(level, pos));
+                                BaseFireBlock.getState(level, pos));
 
 
                     }
                 }
             }
         }
+
+
+    }
+
+    public static void doThermalFlash() {
+
+
+
+
 
 
     }
@@ -92,13 +102,20 @@ public class TerrainModule {
 
                     BlockPos pos = origin.offset(dx, dy, dz);
                     BlockState state = level.getBlockState(pos);
-                    Float blastResistance = state.getBlock().getExplosionResistance();
+                    Float blastResistance = state.getBlock().getExplosionResistance(state, level, pos, null);
+
+                    if (blastResistance.isNaN()|| blastResistance == 0) blastResistance = 0.001f;
 
                     if (dx == 0 && dy == 0 && dz == 0) continue;
 
-                    Float multiplierFragility = 1/blastResistance;
-                    Float multiplierDistance = 1/(float) Math.sqrt(distSq);
-                    Double multiplierTotal = (double) (multiplierFragility + multiplierDistance);
+                    /////////////////////////////////////// Define the Fragility vector of the block ///////////////////////////////////////
+                    float multiplierFragility = Math.max(1/blastResistance,0.001f);
+                    float multiplierDistance = Math.max(1/(float) Math.sqrt(distSq), 0.001f);
+                    double multiplierTotal = multiplierFragility * multiplierDistance;
+
+                    /////////////////////////////// Define the Pitch (Delta) and the Yaw (Alpha) of the block ///////////////////////////////
+                    double Alpha = Math.atan2(dx, dy);
+                    double Delta = Math.atan2(dx, dz);
 
                     blockClusterList.add(
                             new BlockCluster(
@@ -110,7 +127,9 @@ public class TerrainModule {
                                             multiplierTotal*dx,
                                             multiplierTotal*dy,
                                             multiplierTotal*dz
-                                    )
+                                    ),
+                                    Alpha,
+                                    Delta
                             )
                     );
 

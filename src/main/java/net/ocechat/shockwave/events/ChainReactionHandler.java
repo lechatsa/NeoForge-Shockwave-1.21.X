@@ -103,9 +103,8 @@ public class ChainReactionHandler {
         ParticleModule.spawn(level, center, consolidatedRadius);
         TerrainModule.reshape(level, center, consolidatedRadius);
 
-
         if (level instanceof ServerLevel serverLevel) {
-            CondensationSphereHandler.spawn(serverLevel, center, tntFound.size());
+            CondensationSphereHandler.spawn(serverLevel, center, total);
         }
     }
 }
