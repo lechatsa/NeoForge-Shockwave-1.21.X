@@ -108,34 +108,50 @@ public record BlockCluster(BlockPos blockPos, BlockPos center, BlockState blockS
     /// Return a new list of BlockCluster without the BlockCluster hide by other Blocks creating an effective List of block not in the shadow of an emissif source
     public static List<BlockCluster> shadowRemovalProcess(BlockPos center, List<BlockCluster> clusterList) {
 
-        List<BlockCluster> clusterListSortedDistance = new ArrayList<>(clusterList.stream()
-                .sorted(Comparator.comparingDouble(c -> c.blockPos.distSqr(center)))
-                .toList());
-
         int x = center.getX();
         int y = center.getY();
         int z = center.getZ();
 
+        List<BlockCluster> clusterListSortedDistance = new ArrayList<>();
+        List<BlockCluster> clusterListReduced = new ArrayList<>();
 
-        List<BlockCluster> clusterListReduced = clusterListSortedDistance.stream()
-                .filter(cluster -> {
-                    double Yaw = cluster.Yaw;
-                    double Pitch = cluster.Pitch;
 
-                    int dx = cluster.blockPos.getX() - x;
-                    int dy = cluster.blockPos.getY() - y;
-                    int dz = cluster.blockPos.getZ() - z;
-
-                    double MaximalYaw = calculateMaximalYaw(Yaw, dx, dy, dz);
-                    double MinimalYaw = calculateMinimalYaw(Yaw, dx, dy, dz);
-
-                    double MaximalPitch = calculateMaximalPitch(Pitch, dx, dz);
-                    double MinimalPitch = calculateMinimalPitch(Pitch, dx, dz);
-
-                    return !(Yaw < MinimalYaw || MaximalYaw < Yaw || Pitch < MinimalPitch || MaximalPitch < Pitch);
-                })
+        clusterListSortedDistance = clusterList.stream()
+                .sorted(Comparator.comparingDouble(c -> c.blockPos.distSqr(center)))
                 .toList();
 
+        for (BlockCluster candidate : clusterListSortedDistance) {
+            double Yaw = candidate.Yaw;
+            double Pitch = candidate.Pitch;
+
+            int dx = candidate.blockPos.getX() - x;
+            int dy = candidate.blockPos.getY() - y;
+            int dz = candidate.blockPos.getZ() - z;
+
+            double MaximalYaw = calculateMaximalYaw(Yaw, dx, dy, dz);
+            double MinimalYaw = calculateMinimalYaw(Yaw, dx, dy, dz);
+
+            double MaximalPitch = calculateMaximalPitch(Pitch, dx, dz);
+            double MinimalPitch = calculateMinimalPitch(Pitch, dx, dz);
+
+            List<BlockCluster> clusterListReduced = new ArrayList<>();
+
+            for (BlockCluster blocker : clusterListSortedDistance) {
+                double blockerPitch = blocker.Pitch;
+                double blockerYaw = blocker.Yaw;
+
+                 clusterListReduced = clusterListReduced.stream().
+            }
+
+
+        }
         return clusterListReduced;
     }
 }
+//clusterListReduced = clusterListSortedDistance.removeIf(blocker -> {
+//
+//double blockerPitch = blocker.Pitch;
+//double blockerYaw = blocker.Yaw;
+//
+//                return (blockerYaw < MinimalYaw || MaximalYaw < blockerYaw || blockerPitch < MinimalPitch || MaximalPitch < blockerPitch);
+//        });
