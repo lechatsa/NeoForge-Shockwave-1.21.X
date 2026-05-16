@@ -55,9 +55,9 @@ public record BlockCluster(BlockPos blockPos, BlockPos center, BlockState blockS
         double MaximalYaw = 0.0;
 
         if (0 <= Yaw && Yaw < 90) MaximalYaw = Math.atan2(dy + 0.5, dx - 0.5);
-        if (0 <= Yaw && Yaw < 90) MaximalYaw = Math.atan2(dy - 0.5, dx - 0.5);
-        if (0 <= Yaw && Yaw < 90) MaximalYaw = Math.atan2(dy - 0.5, dx + 0.5);
-        if (0 <= Yaw && Yaw < 90) MaximalYaw = Math.atan2(dy + 0.5, dx + 0.5);
+        if (90 <= Yaw && Yaw < 180) MaximalYaw = Math.atan2(dy - 0.5, dx - 0.5);
+        if (180 <= Yaw && Yaw < 270) MaximalYaw = Math.atan2(dy - 0.5, dx + 0.5);
+        if (270 <= Yaw && Yaw < 360) MaximalYaw = Math.atan2(dy + 0.5, dx + 0.5);
 
         return MaximalYaw;
     }
@@ -68,10 +68,10 @@ public record BlockCluster(BlockPos blockPos, BlockPos center, BlockState blockS
 
         double MinimalYaw = 0.0;
 
-        if (0 <= Yaw && Yaw < 90) MinimalYaw = Math.atan2(dy - 0.5, dx + 0.5);
-        if (0 <= Yaw && Yaw < 90) MinimalYaw = Math.atan2(dy + 0.5, dx + 0.5);
-        if (0 <= Yaw && Yaw < 90) MinimalYaw = Math.atan2(dy + 0.5, dx - 0.5);
-        if (0 <= Yaw && Yaw < 90) MinimalYaw = Math.atan2(dy - 0.5, dx - 0.5);
+        if (0 < Yaw && Yaw <= 90) MinimalYaw = Math.atan2(dy - 0.5, dx + 0.5);
+        if (90 < Yaw && Yaw <= 180) MinimalYaw = Math.atan2(dy + 0.5, dx + 0.5);
+        if (180 < Yaw && Yaw <= 270) MinimalYaw = Math.atan2(dy + 0.5, dx - 0.5);
+        if (270 < Yaw && Yaw <= 360) MinimalYaw = Math.atan2(dy - 0.5, dx - 0.5);
 
         return MinimalYaw;
     }
@@ -83,9 +83,9 @@ public record BlockCluster(BlockPos blockPos, BlockPos center, BlockState blockS
         double MaximalPitch = 0.0;
 
         if (0 <= Pitch && Pitch < 90) MaximalPitch = Math.atan2(dz + 0.5, dx - 0.5);
-        if (0 <= Pitch && Pitch < 90) MaximalPitch = Math.atan2(dz - 0.5, dx - 0.5);
-        if (0 <= Pitch && Pitch < 90) MaximalPitch = Math.atan2(dz - 0.5, dx + 0.5);
-        if (0 <= Pitch && Pitch < 90) MaximalPitch = Math.atan2(dz + 0.5, dx + 0.5);
+        if (90 <= Pitch && Pitch < 180) MaximalPitch = Math.atan2(dz - 0.5, dx - 0.5);
+        if (180 <= Pitch && Pitch < 270) MaximalPitch = Math.atan2(dz - 0.5, dx + 0.5);
+        if (270 <= Pitch && Pitch < 360) MaximalPitch = Math.atan2(dz + 0.5, dx + 0.5);
 
         return MaximalPitch;
     }
@@ -96,10 +96,10 @@ public record BlockCluster(BlockPos blockPos, BlockPos center, BlockState blockS
 
         double MinimalPitch = 0.0;
 
-        if (0 <= Pitch && Pitch < 90) MinimalPitch = Math.atan2(dz - 0.5, dx + 0.5);
-        if (0 <= Pitch && Pitch < 90) MinimalPitch = Math.atan2(dz + 0.5, dx + 0.5);
-        if (0 <= Pitch && Pitch < 90) MinimalPitch = Math.atan2(dz + 0.5, dx - 0.5);
-        if (0 <= Pitch && Pitch < 90) MinimalPitch = Math.atan2(dz - 0.5, dx - 0.5);
+        if (0 < Pitch && Pitch <= 90) MinimalPitch = Math.atan2(dz - 0.5, dx + 0.5);
+        if (90 < Pitch && Pitch <= 180) MinimalPitch = Math.atan2(dz + 0.5, dx + 0.5);
+        if (180 < Pitch && Pitch <= 270) MinimalPitch = Math.atan2(dz + 0.5, dx - 0.5);
+        if (270 < Pitch && Pitch <= 360) MinimalPitch = Math.atan2(dz - 0.5, dx - 0.5);
 
         return MinimalPitch;
     }
