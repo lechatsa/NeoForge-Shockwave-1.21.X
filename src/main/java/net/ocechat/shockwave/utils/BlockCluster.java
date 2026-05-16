@@ -4,32 +4,28 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.ocechat.shockwave.ShockwaveMod;
-import oshi.util.tuples.Pair;
+import com.mojang.datafixers.util.Pair;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 
-public record BlockCluster(BlockPos blockPos, BlockPos center, BlockState blockState, PhysicalBehavior physicalBehavior, Vec3 vec3, Double Alpha, Double Delta) {
+public record BlockCluster(BlockPos blockPos, BlockPos center, BlockState blockState, PhysicalBehavior physicalBehavior, Vec3 fragilityVec3, Double Yaw, Double Pitch) {
 
+    ///////////////////////////////////////////// Return the Sum of all vector /////////////////////////////////////////////
     public static Vec3 sum(List<BlockCluster> blockClusterList) {
 
         Vec3 resulting = new Vec3(0,0,0);
 
-        for (BlockCluster blockCluster : blockClusterList) {
-            //if (ShockwaveMod.DEBUG) ShockwaveMod.LOGGER.info("[Shockwave] (BlockCluster) ClusterList : {}", blockCluster.vec3);
-            resulting = resulting.add(blockCluster.vec3); //
-        }
+        for (BlockCluster blockCluster : blockClusterList) resulting = resulting.add(blockCluster.fragilityVec3);
 
         if (ShockwaveMod.DEBUG) ShockwaveMod.LOGGER.info("[Shockwave] (BlockCluster) Cluster sum resulting : x : {}, y : {}, z : {}", resulting.x, resulting.z, resulting.y);
 
         return resulting;
     }
 
-    /**
-    Return the Pitch and Yaw of the sum of all vector
-     **/
 
+    /////////////////////////////////// Return the Pitch and Yaw of the sum of all vector ///////////////////////////////////
     public static Pair<Double, Double> getAngles(List<BlockCluster> clusterList) {
 
         Vec3 resulting = BlockCluster.sum(clusterList);
@@ -46,83 +42,100 @@ public record BlockCluster(BlockPos blockPos, BlockPos center, BlockState blockS
         return new Pair<>(yaw, pitch);
     }
 
-    // On utilise une petite fonction utilitaire pour la distance horizontale
-    private static double getHorizontalDist(double dx, double dz) {
+
+    ////////////////////// Return the Horizontal distance of a 3D triangle define by its Yaw and Pitch //////////////////////
+    private static double getHorizontalDistance(double dx, double dz) {
         return Math.sqrt(dx * dx + dz * dz);
     }
 
-    public static Double calculateGamma(Double alpha, int dx, int dy, int dz) {
-        double hDist = getHorizontalDist(dx, dz);
-        // On veut le coin supérieur du bloc (dy + 0.5)
-        // et le point le plus proche horizontalement (hDist - 0.5)
-        return Math.toDegrees(Math.atan2(dy + 0.5, hDist - 0.5));
-    }
 
-    public static Double calculateBeta(Double alpha, int dx, int dy, int dz) {
-        double hDist = getHorizontalDist(dx, dz);
-        // On veut le coin inférieur du bloc (dy - 0.5)
-        // et le point le plus loin horizontalement (hDist + 0.5)
-        return Math.toDegrees(Math.atan2(dy - 0.5, hDist + 0.5));
-    }
+    ///////////////////////////// Return the Maximal Yaw ( in a trigonometric sense, in Radian) /////////////////////////////
+    public static Double calculateMaximalYaw(Double Yaw, int dx, int dy, int dz) {
 
-    public static Double calculatePhi(Double delta, int dx, int dz) {
-        // Pour l'angle horizontal (Yaw), on utilise dz et dx
-        // On cherche l'angle le plus "à gauche" du bloc
-        return Math.toDegrees(Math.atan2(dz + 0.5, dx - 0.5));
-    }
+        double MaximalYaw = 0.0;
 
-    public static Double calculateOmega(Double delta, int dx, int dz) {
-        // On cherche l'angle le plus "à droite" du bloc
-        return Math.toDegrees(Math.atan2(dz - 0.5, dx + 0.5));
+        if (0 <= Yaw && Yaw < 90) MaximalYaw = Math.atan2(dy + 0.5, dx - 0.5);
+        if (0 <= Yaw && Yaw < 90) MaximalYaw = Math.atan2(dy - 0.5, dx - 0.5);
+        if (0 <= Yaw && Yaw < 90) MaximalYaw = Math.atan2(dy - 0.5, dx + 0.5);
+        if (0 <= Yaw && Yaw < 90) MaximalYaw = Math.atan2(dy + 0.5, dx + 0.5);
+
+        return MaximalYaw;
     }
 
 
+    ///////////////////////////// Return the Minimal Yaw ( in a trigonometric sense, in Radian) /////////////////////////////
+    public static Double calculateMinimalYaw(Double Yaw, int dx, int dy, int dz) {
 
-    public static List<BlockCluster> processShadow(BlockPos center, List<BlockCluster> clusterList) {
-        // 1. TRI : On trie les clusters du plus proche au plus loin du centre.
-        // C'est indispensable pour que les premiers "bloqueurs" soient les plus proches.
-        clusterList.sort(Comparator.comparingDouble(c -> c.blockPos.distSqr(center)));
+        double MinimalYaw = 0.0;
 
-        // 2. Liste qui contiendra uniquement les blocs visibles (non cachés)
-        List<BlockCluster> visibleClusters = new ArrayList<>();
+        if (0 <= Yaw && Yaw < 90) MinimalYaw = Math.atan2(dy - 0.5, dx + 0.5);
+        if (0 <= Yaw && Yaw < 90) MinimalYaw = Math.atan2(dy + 0.5, dx + 0.5);
+        if (0 <= Yaw && Yaw < 90) MinimalYaw = Math.atan2(dy + 0.5, dx - 0.5);
+        if (0 <= Yaw && Yaw < 90) MinimalYaw = Math.atan2(dy - 0.5, dx - 0.5);
 
-        for (BlockCluster current : clusterList) {
-            boolean hidden = false;
+        return MinimalYaw;
+    }
 
-            // On récupère les coordonnées relatives du cluster actuel pour les calculs
-            double dx = current.blockPos.getX() - center.getX();
-            double dy = current.blockPos.getY() - center.getY();
-            double dz = current.blockPos.getZ() - center.getZ();
 
-            // 3. VÉRIFICATION : Est-ce que ce cluster est dans l'ombre d'un bloc déjà validé ?
-            for (BlockCluster blocker : visibleClusters) {
+    //////////////////////////// Return the Maximal Pitch ( in a trigonometric sense, in Radian) ////////////////////////////
+    public static Double calculateMaximalPitch(Double Pitch, int dx, int dz) {
 
-                // On calcule les limites de l'ombre projetée par le "blocker"
-                // On passe les coordonnées relatives du BLOQUEUR pour savoir quelle surface il occupe
-                double bDx = blocker.blockPos.getX() - center.getX();
-                double bDy = blocker.blockPos.getY() - center.getY();
-                double bDz = blocker.blockPos.getZ() - center.getZ();
+        double MaximalPitch = 0.0;
 
-                // Tes formules pour définir le cône d'ombre du bloqueur
-                double gamma = calculateGamma(blocker.Alpha, bDx, bDy, bDz);
-                double beta  = calculateBeta(blocker.Alpha, bDx, bDy, bDz);
-                double phi   = calculatePhi(blocker.Delta, bDx, bDz);
-                double omega = calculateOmega(blocker.Delta, bDx, bDz);
+        if (0 <= Pitch && Pitch < 90) MaximalPitch = Math.atan2(dz + 0.5, dx - 0.5);
+        if (0 <= Pitch && Pitch < 90) MaximalPitch = Math.atan2(dz - 0.5, dx - 0.5);
+        if (0 <= Pitch && Pitch < 90) MaximalPitch = Math.atan2(dz - 0.5, dx + 0.5);
+        if (0 <= Pitch && Pitch < 90) MaximalPitch = Math.atan2(dz + 0.5, dx + 0.5);
 
-                // Si les angles du cluster actuel tombent dans le "rectangle" d'ombre du bloqueur
-                if (current.Alpha >= beta && current.Alpha <= gamma &&
-                        current.Delta >= omega && current.Delta <= phi) {
-                    hidden = true;
-                    break; // Inutile de vérifier les autres bloqueurs, celui-ci suffit
-                }
-            }
+        return MaximalPitch;
+    }
 
-            // 4. ADMISSION : Si aucun bloqueur ne l'a caché, on l'ajoute à la liste visible
-            if (!hidden) {
-                visibleClusters.add(current);
-            }
-        }
 
-        return visibleClusters;
+    //////////////////////////// Return the Minimal Pitch ( in a trigonometric sense, in Radian) ////////////////////////////
+    public static Double calculateMinimalPitch(Double Pitch, int dx, int dz) {
+
+        double MinimalPitch = 0.0;
+
+        if (0 <= Pitch && Pitch < 90) MinimalPitch = Math.atan2(dz - 0.5, dx + 0.5);
+        if (0 <= Pitch && Pitch < 90) MinimalPitch = Math.atan2(dz + 0.5, dx + 0.5);
+        if (0 <= Pitch && Pitch < 90) MinimalPitch = Math.atan2(dz + 0.5, dx - 0.5);
+        if (0 <= Pitch && Pitch < 90) MinimalPitch = Math.atan2(dz - 0.5, dx - 0.5);
+
+        return MinimalPitch;
+    }
+
+
+    /// Return a new list of BlockCluster without the BlockCluster hide by other Blocks creating an effective List of block not in the shadow of an emissif source
+    public static List<BlockCluster> shadowRemovalProcess(BlockPos center, List<BlockCluster> clusterList) {
+
+        List<BlockCluster> clusterListSortedDistance = new ArrayList<>(clusterList.stream()
+                .sorted(Comparator.comparingDouble(c -> c.blockPos.distSqr(center)))
+                .toList());
+
+        int x = center.getX();
+        int y = center.getY();
+        int z = center.getZ();
+
+
+        List<BlockCluster> clusterListReduced = clusterListSortedDistance.stream()
+                .filter(cluster -> {
+                    double Yaw = cluster.Yaw;
+                    double Pitch = cluster.Pitch;
+
+                    int dx = cluster.blockPos.getX() - x;
+                    int dy = cluster.blockPos.getY() - y;
+                    int dz = cluster.blockPos.getZ() - z;
+
+                    double MaximalYaw = calculateMaximalYaw(Yaw, dx, dy, dz);
+                    double MinimalYaw = calculateMinimalYaw(Yaw, dx, dy, dz);
+
+                    double MaximalPitch = calculateMaximalPitch(Pitch, dx, dz);
+                    double MinimalPitch = calculateMinimalPitch(Pitch, dx, dz);
+
+                    return !(Yaw < MinimalYaw || MaximalYaw < Yaw || Pitch < MinimalPitch || MaximalPitch < Pitch);
+                })
+                .toList();
+
+        return clusterListReduced;
     }
 }

@@ -1,5 +1,6 @@
 package net.ocechat.shockwave.modules;
 
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -8,7 +9,6 @@ import net.ocechat.shockwave.client.particle.DebrisParticleData;
 import net.ocechat.shockwave.events.CondensationSphereHandler;
 import net.ocechat.shockwave.utils.BlockCluster;
 import net.ocechat.shockwave.utils.ShockwaveParticles;
-import oshi.util.tuples.Pair;
 
 import java.util.List;
 
@@ -57,10 +57,10 @@ public class ParticleModule {
         Pair<Double, Double> pair = BlockCluster.getAngles(clusterList);
 
         if (ShockwaveMod.DEBUG)
-            ShockwaveMod.LOGGER.info("[Shockwave] (ParticleModule) Spawning debris particles with pitch :  {}, yaw : {}", pair.getB(), pair.getA());
+            ShockwaveMod.LOGGER.info("[Shockwave] (ParticleModule) Spawning debris particles with pitch : {}, yaw : {}", pair.getSecond(), pair.getFirst());
 
-        double yaw = pair.getA();
-        double pitch = pair.getB();
+        double yaw = pair.getFirst();
+        double pitch = pair.getSecond();
 
         for (int i = 0; i < debrisCount; i++) {
 

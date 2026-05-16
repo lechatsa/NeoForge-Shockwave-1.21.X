@@ -113,9 +113,9 @@ public class TerrainModule {
                     float multiplierDistance = Math.max(1/(float) Math.sqrt(distSq), 0.001f);
                     double multiplierTotal = multiplierFragility * multiplierDistance;
 
-                    /////////////////////////////// Define the Pitch (Delta) and the Yaw (Alpha) of the block ///////////////////////////////
-                    double Alpha = Math.atan2(dx, dy);
-                    double Delta = Math.atan2(dx, dz);
+                    /////////////////////////////// Define the Pitch and the Yaw of the block ///////////////////////////////
+                    double Yaw = Math.atan2(dx, dy);
+                    double Pitch = Math.atan2(dx, dz);
 
                     blockClusterList.add(
                             new BlockCluster(
@@ -128,8 +128,8 @@ public class TerrainModule {
                                             multiplierTotal*dy,
                                             multiplierTotal*dz
                                     ),
-                                    Alpha,
-                                    Delta
+                                    Yaw,
+                                    Pitch
                             )
                     );
 
