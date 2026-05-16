@@ -5,8 +5,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.ocechat.shockwave.ShockwaveMod;
 import com.mojang.datafixers.util.Pair;
+
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -112,41 +114,55 @@ public record BlockCluster(BlockPos blockPos, BlockPos center, BlockState blockS
         int y = center.getY();
         int z = center.getZ();
 
-        List<BlockCluster> clusterListSortedDistance = new ArrayList<>();
-        List<BlockCluster> clusterListReduced = new ArrayList<>();
-
-
-        clusterListSortedDistance = clusterList.stream()
+        /// Sorte the List by distance
+        List<BlockCluster> clusterListSorted = new ArrayList<>(clusterList.stream()
                 .sorted(Comparator.comparingDouble(c -> c.blockPos.distSqr(center)))
-                .toList();
+                .toList());
 
-        for (BlockCluster candidate : clusterListSortedDistance) {
-            double Yaw = candidate.Yaw;
-            double Pitch = candidate.Pitch;
+        List<BlockCluster> toRemove = new ArrayList<>();
 
-            int dx = candidate.blockPos.getX() - x;
-            int dy = candidate.blockPos.getY() - y;
-            int dz = candidate.blockPos.getZ() - z;
+        ///  for each block in range, I find its square-based pyramid
+        Iterator<BlockCluster> iterator = clusterListSorted.iterator();
+        while (iterator.hasNext()) {
 
+            BlockCluster caster = iterator.next();
+
+            double Yaw = caster.Yaw;
+            double Pitch = caster.Pitch;
+
+            int dx = caster.blockPos.getX() - x;
+            int dy = caster.blockPos.getY() - y;
+            int dz = caster.blockPos.getZ() - z;
+
+            /// Find the four angles defining the square-based pyramid
             double MaximalYaw = calculateMaximalYaw(Yaw, dx, dy, dz);
             double MinimalYaw = calculateMinimalYaw(Yaw, dx, dy, dz);
 
             double MaximalPitch = calculateMaximalPitch(Pitch, dx, dz);
             double MinimalPitch = calculateMinimalPitch(Pitch, dx, dz);
 
-            List<BlockCluster> clusterListReduced = new ArrayList<>();
+            /// For each block in range except the one I'm currently working on, I check if it's within the square-based pyramidal shadow, If it is then removed it
+            for (BlockCluster candidate : clusterListSorted){
+                if (candidate.equals(caster)) continue;
 
-            for (BlockCluster blocker : clusterListSortedDistance) {
-                double blockerPitch = blocker.Pitch;
-                double blockerYaw = blocker.Yaw;
+                double candidateYaw = candidate.Yaw;
+                double candidatePitch = candidate.Pitch;
 
-                 clusterListReduced = clusterListReduced.stream().
+                if (!( candidateYaw < MinimalYaw || MaximalYaw < candidateYaw || candidatePitch < MinimalPitch || MaximalPitch < candidatePitch )) {
+                    toRemove.add(candidate);
+                    iterator.remove();
+                }
+
             }
 
+            clusterListSorted.removeAll(toRemove);
 
         }
-        return clusterListReduced;
+
+        return clusterListSorted;
     }
+
+
 }
 //clusterListReduced = clusterListSortedDistance.removeIf(blocker -> {
 //
