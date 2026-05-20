@@ -1,4 +1,4 @@
-package net.ocechat.shockwave.utils;
+package net.ocechat.shockwave.cosmetics.visuals;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.particles.ParticleType;
@@ -9,7 +9,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.ocechat.shockwave.ShockwaveMod;
-import net.ocechat.shockwave.client.particle.DebrisParticleData;
+import net.ocechat.shockwave.cosmetics.visuals.client.particle.DebrisParticleData;
 
 public class ShockwaveParticles {
 

@@ -1,9 +1,12 @@
 package net.ocechat.shockwave.events;
 
-import net.ocechat.shockwave.modules.*;
+import net.ocechat.shockwave.cosmetics.sounds.SoundModule;
+import net.ocechat.shockwave.cosmetics.visuals.ParticleModule;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.ExplosionEvent;
+import net.ocechat.shockwave.transformations.crater.TerrainModule;
+import net.ocechat.shockwave.transformations.shockwave.ShockwaveModule;
 
 @EventBusSubscriber(modid = "shockwave")
 public class ExplosionEventHandler {

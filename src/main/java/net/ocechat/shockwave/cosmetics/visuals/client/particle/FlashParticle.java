@@ -1,4 +1,4 @@
-package net.ocechat.shockwave.client.particle;
+package net.ocechat.shockwave.cosmetics.visuals.client.particle;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;

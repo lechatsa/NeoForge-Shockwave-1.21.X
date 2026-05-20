@@ -1,21 +1,16 @@
 package net.ocechat.shockwave;
 
 import com.mojang.logging.LogUtils;
-import net.minecraft.server.level.ServerLevel;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
-import net.neoforged.neoforge.common.NeoForgeConfig;
-import net.ocechat.shockwave.events.CondensationSphereHandler;
 import net.ocechat.shockwave.events.ExplosionEventHandler;
 import net.ocechat.shockwave.events.ChainReactionHandler;
-import net.ocechat.shockwave.utils.ShockwaveParticleRegistry;
-import net.ocechat.shockwave.utils.ShockwaveParticles;
-import net.ocechat.shockwave.utils.ShockwaveSounds;
+import net.ocechat.shockwave.registries.ShockwaveParticleRegistry;
+import net.ocechat.shockwave.cosmetics.visuals.ShockwaveParticles;
+import net.ocechat.shockwave.cosmetics.sounds.ShockwaveSounds;
 import org.slf4j.Logger;
 
 @Mod(ShockwaveMod.MOD_ID)

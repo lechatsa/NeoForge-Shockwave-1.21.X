@@ -1,8 +1,8 @@
-package net.ocechat.shockwave.utils;
+package net.ocechat.shockwave.registries;
 
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
-import net.ocechat.shockwave.utils.ShockwaveParticles;
-import net.ocechat.shockwave.client.particle.*;
+import net.ocechat.shockwave.cosmetics.visuals.ShockwaveParticles;
+import net.ocechat.shockwave.cosmetics.visuals.client.particle.*;
 
 public class ShockwaveParticleRegistry {
 

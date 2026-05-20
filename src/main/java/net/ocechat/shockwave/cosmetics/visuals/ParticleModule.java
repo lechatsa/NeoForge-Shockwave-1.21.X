@@ -1,14 +1,12 @@
-package net.ocechat.shockwave.modules;
+package net.ocechat.shockwave.cosmetics.visuals;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.ocechat.shockwave.ShockwaveMod;
-import net.ocechat.shockwave.client.particle.DebrisParticleData;
-import net.ocechat.shockwave.events.CondensationSphereHandler;
-import net.ocechat.shockwave.utils.BlockCluster;
-import net.ocechat.shockwave.utils.ShockwaveParticles;
+import net.ocechat.shockwave.cosmetics.visuals.client.particle.DebrisParticleData;
+import net.ocechat.shockwave.utility.clusters.BlockCluster;
 
 import java.util.List;
 
@@ -46,7 +44,7 @@ public class ParticleModule {
                 1.0
         );
 
-        List<BlockCluster> clusterList = TerrainModule.defineCluster(level, pos, radius);
+        List<BlockCluster> clusterList = BlockCluster.defineCluster(level, pos, radius);
 
 
         // Debris — speed and count scale with explosion radius

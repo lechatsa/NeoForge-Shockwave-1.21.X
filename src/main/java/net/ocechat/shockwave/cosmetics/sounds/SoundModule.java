@@ -1,4 +1,4 @@
-package net.ocechat.shockwave.modules;
+package net.ocechat.shockwave.cosmetics.sounds;
 
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;

@@ -1,4 +1,4 @@
-package net.ocechat.shockwave.client.particle;
+package net.ocechat.shockwave.cosmetics.visuals.client.particle;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
@@ -7,27 +7,23 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class ShockwaveRingParticle extends TextureSheetParticle {
+public class CondensationSphereParticle extends TextureSheetParticle {
 
     private final SpriteSet sprites;
 
-    protected ShockwaveRingParticle(ClientLevel level, double x, double y, double z,
-                                    double vx, double vy, double vz, SpriteSet sprites) {
+    protected CondensationSphereParticle(ClientLevel level, double x, double y, double z,
+                                         SpriteSet sprites) {
         super(level, x, y, z, 0, 0, 0);
-        this.sprites = sprites;
-
-        this.lifetime   = 12;
-        this.quadSize   = 0.1f;
-        this.alpha      = 0.9f;
+        this.sprites    = sprites;
+        this.lifetime   = 3;
+        this.quadSize   = 0.18f;
+        this.alpha      = 0.75f;
         this.hasPhysics = false;
+        this.xd = 0; this.yd = 0; this.zd = 0;
 
-        // Greyish-white shockwave
-        this.rCol = 0.9f;
-        this.gCol = 0.9f;
-        this.bCol = 0.9f;
-
-        // vx carries the target max radius passed from ParticleModule
-        this.yd = 0;
+        this.rCol = 1.0f;
+        this.gCol = 1.0f;
+        this.bCol = 1.0f;
 
         this.setSpriteFromAge(sprites);
     }
@@ -35,15 +31,8 @@ public class ShockwaveRingParticle extends TextureSheetParticle {
     @Override
     public void tick() {
         super.tick();
-
-        float progress = (float) this.age / this.lifetime;
-
-        // Ring expands outward fast then decelerates
-        this.quadSize = progress * 16.0f * (1.0f - progress * 0.5f);
-
-        // Fade out quickly
-        this.alpha = 1.0f - progress;
-
+        // Fast fade — visible for exactly 3 ticks
+        this.alpha = 0.75f * (1.0f - (float) this.age / this.lifetime);
         this.setSpriteFromAge(sprites);
     }
 
@@ -61,7 +50,7 @@ public class ShockwaveRingParticle extends TextureSheetParticle {
         public Particle createParticle(SimpleParticleType type, ClientLevel level,
                                        double x, double y, double z,
                                        double vx, double vy, double vz) {
-            return new ShockwaveRingParticle(level, x, y, z, vx, vy, vz, sprites);
+            return new CondensationSphereParticle(level, x, y, z, sprites);
         }
     }
 }

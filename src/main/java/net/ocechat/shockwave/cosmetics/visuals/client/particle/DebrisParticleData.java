@@ -1,4 +1,4 @@
-package net.ocechat.shockwave.client.particle;
+package net.ocechat.shockwave.cosmetics.visuals.client.particle;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -7,7 +7,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.ocechat.shockwave.utils.ShockwaveParticles;
+import net.ocechat.shockwave.cosmetics.visuals.ShockwaveParticles;
 
 public record DebrisParticleData(float vx, float vy, float vz)
         implements ParticleOptions {

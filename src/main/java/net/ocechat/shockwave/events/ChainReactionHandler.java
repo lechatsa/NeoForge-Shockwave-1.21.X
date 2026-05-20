@@ -33,8 +33,7 @@ public class ChainReactionHandler {
 
         BlockPos origin = tnt.blockPosition();
 
-        if (ShockwaveMod.DEBUG)
-            ShockwaveMod.LOGGER.info("[Shockwave] (ChainReaction) PrimedTnt intercepted at {}", origin);
+        if (ShockwaveMod.DEBUG) ShockwaveMod.LOGGER.info("[Shockwave] (ChainReaction) PrimedTnt intercepted at {}", origin);
 
         // --- BFS: collect all adjacent TNT blocks ---
         Set<BlockPos> visited   = new HashSet<>();
@@ -67,9 +66,7 @@ public class ChainReactionHandler {
 
         int total = 1 + tntFound.size();
 
-        if (ShockwaveMod.DEBUG)
-            ShockwaveMod.LOGGER.info("[Shockwave] (ChainReaction) {} TNT total (chain of {})",
-                    total, tntFound.size());
+        if (ShockwaveMod.DEBUG) ShockwaveMod.LOGGER.info("[Shockwave] (ChainReaction) {} TNT total (chain of {})", total, tntFound.size());
 
         // --- Remove all chained TNT blocks ---
         for (BlockPos pos : tntFound) {
@@ -93,18 +90,9 @@ public class ChainReactionHandler {
         // 1 TNT → radius ×1.0 | 10 TNT → ×3.3 | 100 TNT → ×5.6
         float consolidatedRadius = BASE_RADIUS * (1.0f + (float) Math.log(total));
 
-        if (ShockwaveMod.DEBUG)
-            ShockwaveMod.LOGGER.info("[Shockwave] (ChainReaction) Center={} Radius={} (scale={}x)",
-                    center, consolidatedRadius, 1.0f + (float) Math.log(total));
+        if (ShockwaveMod.DEBUG) ShockwaveMod.LOGGER.info("[Shockwave] (ChainReaction) Center={} Radius={} (scale={}x)", center, consolidatedRadius, 1.0f + (float) Math.log(total));
 
         // --- Trigger the full explosion pipeline ---
-        ShockwaveModule.apply(level, center, consolidatedRadius, total);
-        SoundModule.play(level, center, consolidatedRadius);
-        ParticleModule.spawn(level, center, consolidatedRadius);
-        TerrainModule.reshape(level, center, consolidatedRadius);
 
-        if (level instanceof ServerLevel serverLevel) {
-            CondensationSphereHandler.spawn(serverLevel, center, total);
-        }
     }
 }

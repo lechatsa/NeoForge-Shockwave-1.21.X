@@ -1,4 +1,4 @@
-package net.ocechat.shockwave.modules;
+package net.ocechat.shockwave.transformations.shockwave;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -6,8 +6,11 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.entity.Entity;
 import net.ocechat.shockwave.ShockwaveMod;
+import net.ocechat.shockwave.utility.ExplosionFormula;
 
 import static net.ocechat.shockwave.ShockwaveConfig.*;
+import static net.ocechat.shockwave.utility.ExplosionFormula.calculateDamage;
+
 
 public class ShockwaveModule {
 
@@ -29,23 +32,19 @@ public class ShockwaveModule {
             double v = calculateVelocity(P);
 
             // Damage and impulse — calibrated in Minecraft units
-            Float damage = calculateDamage(d, numberOfTNT);
-
-            if (ShockwaveMod.DEBUG)
-                ShockwaveMod.LOGGER.info(
-                        "[Shockwave] (ShockwaveModule) {} | damage={} Z={} P={}Pa v={}m/s d={}m E={}J", entity.getName().getString(), damage, Z, P, v, d, E);
+            float damage = calculateDamage(d, numberOfTNT);
 
             applyImpulse(entity, center, d, r, v);
 
             if (damage >= 1f && entity instanceof LivingEntity living) {
-                living.hurt(
-                        living.level().damageSources().explosion(null, null),
-                        damage
-                );
+                living.hurt(living.level().damageSources().explosion(null, null), damage);
+
+                if (ShockwaveMod.DEBUG) ShockwaveMod.LOGGER.info("[Shockwave] (ShockwaveModule) {} | damage={} Z={} P={}Pa v={}m/s d={}m E={}J", entity.getName().getString(), damage, Z, P, v, d, E);
+
             } else if (ShockwaveMod.DEBUG) {
-                ShockwaveMod.LOGGER.info(
-                        "[Shockwave] (ShockwaveModule) Skipped {} (damage = {} < 1 or not living)",
-                        entity.getName().getString(), damage);
+
+                ShockwaveMod.LOGGER.info("[Shockwave] (ShockwaveModule) Skipped {} (damage = {} < 1 or not living)", entity.getName().getString(), damage);
+
             }
         });
     }
@@ -76,21 +75,6 @@ public class ShockwaveModule {
         double P0    = PRESSURE.get();
         double c0    = SOUND_SPEED.get();
         return c0 * Math.sqrt(1.0 + ((gamma + 1.0) / (2.0 * gamma)) * (P / P0));
-    }
-
-    // -- damage (HP) :
-    public static float calculateDamage(double x,int numberOfTNT) {
-
-        double squareTNT = Math.pow(numberOfTNT, 1.0/3.0);
-        double a = squareTNT; // a is the multiplier of the MAX damage dealt at 0m
-        double b = squareTNT; // b is the multiplier of the distance at which the damage is null
-
-        double p = BASE_VALUE_MAX.get();
-        double m = -p / Math.sqrt(BASE_VALUE_ZERO.get());
-
-        double damage = Math.max(m * (a)/(Math.sqrt(b)) * Math.sqrt(x) + p * a, 0.0); // dmg(x) = m * (a)/(sqrt(b)) sqrt(x) + p * a
-        if (ShockwaveMod.DEBUG) ShockwaveMod.LOGGER.info("[Shockwave] (ShockwaveModule) f({}) = {} x {}/ √{} x √{} + {} x {} = {}dmg", x, m, a, b, x, p, a, Math.round(damage));
-        return (float) damage;
     }
 
     // -- Impulse : radial push, v used as a relative strength indicator

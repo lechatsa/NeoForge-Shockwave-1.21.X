@@ -7,14 +7,11 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.ocechat.shockwave.ShockwaveMod;
-import net.ocechat.shockwave.utils.ShockwaveParticles;
-import net.ocechat.shockwave.modules.ShockwaveModule;
+import net.ocechat.shockwave.transformations.shockwave.ShockwaveModule;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import static net.ocechat.shockwave.ShockwaveConfig.*;
 
 @EventBusSubscriber(modid = ShockwaveMod.MOD_ID)
 public class CondensationSphereHandler {
