@@ -6,7 +6,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.entity.Entity;
 import net.ocechat.shockwave.ShockwaveMod;
-import net.ocechat.shockwave.utility.ExplosionFormula;
 
 import static net.ocechat.shockwave.ShockwaveConfig.*;
 import static net.ocechat.shockwave.utility.ExplosionFormula.calculateDamage;
@@ -16,9 +15,9 @@ public class ShockwaveModule {
 
     // Base lethal radius for 1 TNT in Minecraft blocks
 
-    public static void apply(Level level, Vec3 center, float radius, int numberOfTNT) {
+    public static void apply(Level level, Vec3 center, float power, int numberOfTNT) {
 
-        double r = radius * SHOCKWAVE_MULTIPLIER.get();
+        double r = power * SHOCKWAVE_MULTIPLIER.get();
 
         level.getEntitiesOfClass(Entity.class,
                 AABB.ofSize(center, r * 2, r * 2, r * 2)
@@ -78,8 +77,7 @@ public class ShockwaveModule {
     }
 
     // -- Impulse : radial push, v used as a relative strength indicator
-    private static void applyImpulse(Entity entity, Vec3 center,
-                                     double d, double r, double v) {
+    private static void applyImpulse(Entity entity, Vec3 center, double d, double r, double v) {
         if (d >= r) return;
 
         Vec3 delta = entity.position().subtract(center);

@@ -25,6 +25,8 @@ public class ShockwaveConfig {
     public static final ModConfigSpec.BooleanValue ENABLE_CRATER;
     public static final ModConfigSpec.DoubleValue BASE_VALUE_ZERO;
     public static final ModConfigSpec.DoubleValue BASE_VALUE_MAX;
+    public static final ModConfigSpec.DoubleValue BASE_EXPLOSION_RADIUS;
+
     static {
         BUILDER.push("shockwave");
 
@@ -78,6 +80,11 @@ public class ShockwaveConfig {
         BASE_VALUE_MAX  = BUILDER
                 .comment("The maximum damage inflicted by one kilogram of TNT at a theoretical distance of 0")
                 .defineInRange("baseValueMax", 50.0, 1.0, 200.0);
+
+        BASE_EXPLOSION_RADIUS  = BUILDER
+                .comment("The base radius of the explosion of 1 TNT")
+                .defineInRange("baseExplosionRadius", 4.0, 1.0, 10.0);
+
 
         BUILDER.pop();
         SPEC = BUILDER.build();

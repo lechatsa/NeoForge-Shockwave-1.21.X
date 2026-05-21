@@ -4,9 +4,11 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.ocechat.shockwave.MainModule;
 import net.ocechat.shockwave.ShockwaveMod;
 import net.ocechat.shockwave.cosmetics.visuals.client.particle.DebrisParticleData;
 import net.ocechat.shockwave.utility.clusters.BlockCluster;
+import net.ocechat.shockwave.utility.clusters.BlockData;
 
 import java.util.List;
 
@@ -16,8 +18,7 @@ public class ParticleModule {
 
         if (!(level instanceof ServerLevel serverLevel)) return;
 
-        if (ShockwaveMod.DEBUG)
-            ShockwaveMod.LOGGER.info("[Shockwave] (ParticleModule) Spawning particles at {}", pos);
+        if (ShockwaveMod.DEBUG) ShockwaveMod.LOGGER.info("[Shockwave] (ParticleModule) Spawning particles at {}", pos);
 
 
         // Fireball — single centered, expands via quadSize in tick()
@@ -44,7 +45,7 @@ public class ParticleModule {
                 1.0
         );
 
-        List<BlockCluster> clusterList = BlockCluster.defineCluster(level, pos, radius);
+        BlockCluster clusterList = MainModule.defineCluster(level, pos, radius);
 
 
         // Debris — speed and count scale with explosion radius
@@ -52,10 +53,9 @@ public class ParticleModule {
         float speedBase = 0.3f + radius * 0.08f;   // small explosion: ~0.5  |  large: ~1.1+
         float speedVar  = radius * 0.05f;
 
-        Pair<Double, Double> pair = BlockCluster.getAngles(clusterList);
+        Pair<Double, Double> pair = BlockData.getAnglesVector(BlockData.getResultingVector(clusterList));
 
-        if (ShockwaveMod.DEBUG)
-            ShockwaveMod.LOGGER.info("[Shockwave] (ParticleModule) Spawning debris particles with pitch : {}, yaw : {}", pair.getSecond(), pair.getFirst());
+        if (ShockwaveMod.DEBUG) ShockwaveMod.LOGGER.info("[Shockwave] (ParticleModule) Spawning debris particles with pitch : {}, yaw : {}", pair.getSecond(), pair.getFirst());
 
         double yaw = pair.getFirst();
         double pitch = pair.getSecond();
@@ -65,7 +65,7 @@ public class ParticleModule {
             double yawRandomised = yaw + (serverLevel.random.nextDouble() - 0.5) * (Math.PI / 2);
             double pitchRandomised = pitch + (serverLevel.random.nextDouble() - 0.5) * (Math.PI / 2);
 
-            float speed      = speedBase + serverLevel.random.nextFloat() * speedVar;
+            float speed = speedBase + serverLevel.random.nextFloat() * speedVar;
 
             float vx = (float) (Math.cos(yawRandomised) * Math.cos(pitchRandomised) * speed);
             float vy = (float) (Math.sin(pitchRandomised) * speed);

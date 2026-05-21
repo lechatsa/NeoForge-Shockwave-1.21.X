@@ -13,9 +13,9 @@ import net.minecraft.world.phys.Vec3;
 import net.ocechat.shockwave.ShockwaveMod;
 import net.ocechat.shockwave.utility.*;
 import net.ocechat.shockwave.utility.clusters.BlockCluster;
+import net.ocechat.shockwave.utility.clusters.BlockData;
 
 import java.util.EnumSet;
-import java.util.List;
 
 public class TerrainModule {
 
@@ -80,18 +80,18 @@ public class TerrainModule {
     }
 
 
-    public static void doThermalFlash(Level level, BlockPos center, List<BlockCluster> clusterList, ExplosionProperties explosionProperties) {
+    public static void doThermalFlash(Level level, BlockPos center, BlockCluster clusterList, ExplosionProperties explosionProperties) {
 
-        List<BlockCluster> visibleBlockCluster = BlockCluster.shadowRemovalProcess(center, clusterList);
+        BlockCluster visibleBlockCluster = BlockData.shadowRemovalProcess(center, clusterList);
 
-        for (BlockCluster cluster : visibleBlockCluster) {
+        for (BlockData data : visibleBlockCluster.asList()) {
 
-            BlockState state = cluster.blockState();
-            BlockPos pos = cluster.blockPos();
-            EnumSet<PhysicalBehavior> behaviors = cluster.physicalBehavior();
+            BlockState state = data.blockState();
+            BlockPos pos = data.blockPos();
+            EnumSet<PhysicalBehavior> behaviors = data.physicalBehavior();
 
-            double Yaw = cluster.Yaw();
-            double Pitch = cluster.Pitch();
+            double Yaw = data.Yaw();
+            double Pitch = data.Pitch();
 
             if (behaviors.contains(PhysicalBehavior.FLAMMABLE)) {
 
@@ -112,7 +112,7 @@ public class TerrainModule {
         }
     }
 
-    public static void doCrater(Level level, BlockPos center, List<BlockCluster> clusterList) {
+    public static void doCrater(Level level, BlockPos center, BlockCluster clusterList) {
 
     }
 
@@ -120,7 +120,7 @@ public class TerrainModule {
 
     public static void doTerrainEffects(Level level, ExplosionProperties explosionProperties) {
 
-        List<BlockCluster> clusterList = explosionProperties.clusterList();
+        BlockCluster blockCluster = explosionProperties.clusterList();
         BlockPos center = explosionProperties.center();
         ExplosionFormula formula = explosionProperties.formula();
 
@@ -134,8 +134,8 @@ public class TerrainModule {
 
 
 
-        doCrater(level, center, clusterList);
-        doThermalFlash(level, center, clusterList, explosionProperties);
+        doCrater(level, center, blockCluster);
+        doThermalFlash(level, center, blockCluster, explosionProperties);
     }
 
 

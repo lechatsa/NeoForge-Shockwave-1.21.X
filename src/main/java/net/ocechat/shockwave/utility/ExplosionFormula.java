@@ -49,3 +49,19 @@ public record ExplosionFormula(Double distanceForZero, Double maxDamage) {
     }
 
 }
+/*
+Une Explosion est détectée
+|
+ChaineReactionHandler => BlockPos center, int numberTNT
+|
+MainModule => List<BlockCluster> clusterList, float power, ExplosionFormula formula, List<BlockCluster> visibleClusterList
+├── Cosmetics (Ce qui n'affecte pas vraiment le gameplay)
+|    ├── Sounds (the son est retardé ou assourdi si dans l'eau) => Delay, Muffled, Sounds
+|    └── Visuals => CondensationSphere, Debris, Smoke/Mushroom
+|
+└── Transformations (Toutes transformations réelles et impactantes)
+     ├── Shockwave => Partie la plus destructive : Détruit tous les block jugée fragile par le programme tel que les arbres, inflige également les dégâts les plus importants
+     ├── IRFlash => Seulement pour les explosions les plus violentes - de l'ordre du KiloTonne de TNT - un flash d'IR si puissant qu'il brûle feuillage bûche, entity
+     └── Crater => Destruction pure très proche de l'explosion qui vaporise le sol et le transforme en Lava, block de magma, basalte
+
+*/

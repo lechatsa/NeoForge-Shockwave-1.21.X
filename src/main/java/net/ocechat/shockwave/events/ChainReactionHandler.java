@@ -10,15 +10,13 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.ocechat.shockwave.MainModule;
 import net.ocechat.shockwave.ShockwaveMod;
-import net.ocechat.shockwave.modules.*;
 
 import java.util.*;
 
 @EventBusSubscriber(modid = "shockwave")
 public class ChainReactionHandler {
-
-    private static final float BASE_RADIUS = 4.0f;
 
     @SubscribeEvent
     public static void onEntityJoinLevel(EntityJoinLevelEvent event) {
@@ -86,13 +84,10 @@ public class ChainReactionHandler {
 
         Vec3 center = new Vec3(sumX / total, sumY / total, sumZ / total);
 
-        // --- Logarithmic power scaling ---
-        // 1 TNT → radius ×1.0 | 10 TNT → ×3.3 | 100 TNT → ×5.6
-        float consolidatedRadius = BASE_RADIUS * (1.0f + (float) Math.log(total));
-
         if (ShockwaveMod.DEBUG) ShockwaveMod.LOGGER.info("[Shockwave] (ChainReaction) Center={} Radius={} (scale={}x)", center, consolidatedRadius, 1.0f + (float) Math.log(total));
 
         // --- Trigger the full explosion pipeline ---
+        MainModule.applyExplosion(level, center, total);
 
     }
 }
